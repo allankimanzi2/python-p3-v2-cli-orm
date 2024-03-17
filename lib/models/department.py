@@ -143,7 +143,11 @@ class Department:
 
     @classmethod
     def find_by_id(cls, id):
-        """Return a Department object corresponding to the table row matching the specified primary key"""
+        try:
+            id = int(id)  # Ensure id is converted to int
+        except ValueError:
+            return None
+
         sql = """
             SELECT *
             FROM departments
@@ -153,13 +157,13 @@ class Department:
         row = CURSOR.execute(sql, (id,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
+
     @classmethod
     def find_by_name(cls, name):
-        """Return a Department object corresponding to first table row matching specified name"""
         sql = """
             SELECT *
             FROM departments
-            WHERE name is ?
+            WHERE name = ?
         """
 
         row = CURSOR.execute(sql, (name,)).fetchone()
